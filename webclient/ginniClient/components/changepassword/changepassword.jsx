@@ -4,6 +4,7 @@ import {hashHistory} from 'react-router';
 import Axios from 'axios';
 import validator from 'validator';
 import './changepassword.css';
+import Cookie from 'react-cookie';
 import ChangePasswordPage from '../../../Multi_Lingual/Wordings.json';
 export default class ChangePassword extends React.Component {
     constructor(props) {
@@ -65,7 +66,7 @@ export default class ChangePassword extends React.Component {
             }
         }
     }
-    close = () => hashHistory.push('/chat');
+    close = () => hashHistory.push('/chat/'+Cookie.load('domain').toLowerCase());
     /* function is used to send the new password to the server
     and it will be updated in the user database*/
     passwordchange(e, value) {
@@ -77,7 +78,8 @@ export default class ChangePassword extends React.Component {
                 password: value.formData.password
             }
         }).then(function(msg) {
-            hashHistory.push('/chat');
+            hashHistory.push('/chat/'+Cookie.load('domain').toLowerCase());
+            console.log('/chat/'+Cookie.load('domain').toLowerCase());
         }).catch(function(error) {
             console.log(error);
         });

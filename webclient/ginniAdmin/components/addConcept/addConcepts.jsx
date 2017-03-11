@@ -12,7 +12,7 @@ import Config from '../../../../config/url';
 import Axios from 'axios';
 import Snackbar from 'material-ui/Snackbar';
 
-export default class addbot extends React.Component {
+export default class AddConcept extends React.Component {
     constructor(props) {
         super(props);
         this.getConcept = this.getConcept.bind(this);
@@ -27,7 +27,7 @@ export default class addbot extends React.Component {
             concepts: []
         };
     }
-    // bind the dropdown with all concepts from neo4j databse
+    // @vibakar: bind the dropdown with all concepts and relationships from neo4j databse
     componentDidMount() {
         let url = Config.url + '/concept/rc';
         Axios.get(url).then((response) => {
@@ -63,14 +63,14 @@ export default class addbot extends React.Component {
     createNewConcept(e) {
         e.preventDefault();
 
-        // getting the value of new concept from text field
+        // @vibakar: getting the value of new concept from text field
         let newConceptText = this.refs.newConceptText.value;
         let existingConcept = this.state.conceptValue;
         let relation = this.state.relationValue;
 
-        // checking for empty field since empty node is not required
+        // @vibakar: checking for empty field since empty node is not required
         if (newConceptText && existingConcept && relation) {
-            // ajax call for saving new concept in graph databse
+            // @vibakar: saving new concept in graph databse
             let url = Config.url + '/concept/createConcept';
             Axios.post(url, {
                 newConcept: newConceptText,
@@ -84,7 +84,7 @@ export default class addbot extends React.Component {
                     this.setState({concepts: conceptsCopy});
                 }
 
-                // clearing the input fields
+                // @vibakar: clearing the input fields
                 this.refs.newConceptText.value = '';
                 this.setState({relationValue: ''});
                 this.setState({conceptValue: ''});
@@ -95,13 +95,15 @@ export default class addbot extends React.Component {
             this.setState({opensnackbar: true, snackbarMsg: 'Please fill all the fields'});
         }
     }
+    // Adding The New Concept To The Existing Concept @ Deepika
     render() {
         return (
             <div style={{
                 backgroundImage: 'url(\'../../images/background.jpg\')',
                 height: '100%'
             }}>
-                <Grid >
+
+                <Grid>
                     <Grid.Column width={1}/>
                     <Grid.Column width={6}>
                         <Grid.Row/>
@@ -141,11 +143,8 @@ export default class addbot extends React.Component {
                             </Button>
 
                         </Grid.Row>
-                        <br/>
-                        <br/>
-                        <Grid.Row/>
-                        <br/>
-                        <br/>
+                      <br/>
+                      <Grid.Row/>
                         <Grid.Row>
                             <Grid.Column width={5} />
                             <Grid.Column width={6} />

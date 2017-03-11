@@ -7,11 +7,11 @@
   position: absolute;
   bottom: 0;
   max-height: 519px;
-  margin-left:-10px;
-  width: 100%;
+  margin-left:25px;
+  width: 99%;
 }
 #ginniview {
-    margin-left: 2%;
+    margin-left: -9px;
     margin-top: 0px;
     margin-bottom: 0px;
     font-weight: bold;
@@ -62,6 +62,8 @@
     overflow-x: hidden;
     width: 100%;
     text-align: right;
+    margin-left: -9px;
+    margin-right: 5px;
 }
 #assistantViewGenni{
   display: block;
@@ -87,8 +89,8 @@
     color: #fff;
     margin-left: 50%;
     background-color: white;
-    margin-right: 30px;
-    max-width: 50%;
+    margin-right: 20px;
+    max-width: 60%;
     overflow-x: hidden;
     padding: 2px 4px 3px 4px;
     text-align: justify;
@@ -128,4 +130,15 @@
 #ginni {
     margin-top: -15px;
     min-height: 510px;
+}
+
+#viewuserchat
+{
+  background-color:teal;
+  color:white;
+  text-align:center;
+}
+#viewuserchatcontent
+{
+  text-align: justify;
 }

@@ -60,12 +60,13 @@ export default class AssistantGinniOptions extends React.Component {
       });
       this.setState({saved: true});
     }
+    /* @threkashri: edited code for displaying option */
     render() {
         let likeDislikeMsg = this.state.likeDislikeMsg;
         return (
 
             <Feed.Meta>
-                
+
                 {!this.state.saved ? <Popup trigger={< Icon circular name = 'save' color = 'green'
                    onClick={this.savedQuery} />} content='save this message' size='mini'/> : ''}
                 {this.state.saved ? <Label as='a' inverted color='teal' circular>Saved</Label> : ''}

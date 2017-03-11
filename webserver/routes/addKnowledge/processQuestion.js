@@ -4,6 +4,9 @@ let nlp = require('nlp_compromise');
 // let client = redis.createClient();
 
 module.exports = function(sentence) {
+
+    let keywordLexicon = require('./../../lexicon/keywordLexicon.json');
+    let intentLexicon = require('./../../lexicon/intentLexicon.json');
     // let keywordLexicon = client.smembers('keywords');
     // let intentLexicon  = client.smembers('intents');
     //

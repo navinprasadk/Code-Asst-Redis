@@ -1,3 +1,4 @@
+/* @navinprasad: redis controller */
 let fetchIntents = require('./getIntents');
 
 function getIntents()

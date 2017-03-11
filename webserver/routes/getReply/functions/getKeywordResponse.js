@@ -5,18 +5,27 @@ let replyForKeyword = require('../../../config/replyForKeyword.json');
 let User = require('./../../../models/user');
 
 module.exports = function(keywords, email, types, sendResponse, flag, correctedQuestion) {
-    // query to extract data
+    /* @yuvashree: find domain from db using email id */
     User.findOne({
-      $or: [ { 'local.email': email }, { 'google.email': email }, { 'facebook.email': email } ]
+        $or: [
+            {
+                'local.email': email
+            }, {
+                'google.email': email
+            }, {
+                'facebook.email': email
+            }
+        ]
     }, function(error, data) {
         if (error) {
             return error;
         }
         let domain = data.local.loggedinDomain;
         let query = '';
-      if(types.length === 0)
-      {
-                query = `UNWIND ${JSON.stringify(keywords)} AS token
+        // query to extract data
+        /* @yuvashree: modified query for multiple relationships and different domain for normal question */
+        if (types.length === 0) {
+            query = `UNWIND ${JSON.stringify(keywords)} AS token
                  MATCH (n:concept)
                  WHERE n.name = token
                  OPTIONAL MATCH (n)-[r:same_as]->(main)
@@ -25,16 +34,15 @@ module.exports = function(keywords, email, types, sendResponse, flag, correctedQ
                  MATCH p=(token)-[:part_of|:subconcept|:actor_of|:same_as*]->(:concept{name:'${domain}'})
                  WITH length(p) AS max,baseWords AS baseWords
                  UNWIND baseWords AS bw
-                 match p=(bw)-[:part_of|:subconcept|:actor_of|:same_as*]->(:concept{name:'${domain}'})
+                 match p=(bw)-[:part_of|:subconcept|:actor_of|:same_as*]->(:concept{name:'${domain/* @yuvashree: modified query for multiple relationships and different domain for type specific question */}'})
                  WHERE length(p) = max
                  WITH bw as bw
                  MATCH (n)<-[rel:answer]-(q:question)-->(bw) where n:blog or n:video or n:image
                  WITH bw as bw,n as n ,rel as rel
                  ORDER BY rel.rating DESC
                  RETURN LABELS(n)as contentType ,COLLECT(distinct n.value) `;
-            }
-            else {
-              query = `UNWIND ${JSON.stringify(types)} AS token
+        } else {
+            query = `UNWIND ${JSON.stringify(types)} AS token
               MATCH (n:type)
               WHERE n.name = token
               OPTIONAL MATCH (n)-[r:same_as]->(main)
@@ -55,8 +63,7 @@ module.exports = function(keywords, email, types, sendResponse, flag, correctedQ
                WITH bw as bw,n as n ,rel as rel
                ORDER BY rel.rating DESC
                RETURN LABELS(n)as contentType ,COLLECT(distinct n.value) `;
-            }
-
+             }
         let session = getNeo4jDriver().session();
         session.run(query).then(function(result) {
             // Completed!
@@ -86,10 +93,13 @@ module.exports = function(keywords, email, types, sendResponse, flag, correctedQ
                 });
                 resultObj.time = new Date().toLocaleString();
                 if (hasAtleastSomeContent) {
+                  //  @Mayanka: If spell check done show this message
                     if (flag == 1) {
                         resultObj.value = 'Showing results for : ' +
                             "\"" + correctedQuestion + "\"" + ' instead';
-                    } else {
+                    }
+                  //  @Mayanka: no matching keyword found
+                    else {
                         resultObj.value = replyForKeyword[Math.floor(Math.random() * replyForKeyword.length)];
                     }
                     resultArray.push(resultObj);

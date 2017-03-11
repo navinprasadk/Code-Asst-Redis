@@ -1,3 +1,4 @@
+/* @navinprasad: fetch the type of answer from redis */
 let client = require('./redisClient');
 
 module.exports = function(resultCallback) {

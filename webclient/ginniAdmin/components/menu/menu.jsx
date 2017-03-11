@@ -5,7 +5,8 @@ import {
     Segment,
     Menu,
     Image,
-    Icon
+    Icon,
+    Accordion
   } from 'semantic-ui-react';
 import './menu.css';
 import TopMenuBot from './topmenubot';
@@ -60,10 +61,23 @@ export default class SidebarBot extends Component {
                         <Icon name='help' color='teal'/>
                         {AdminMenu.AdminMenu.Topic6}
                     </Menu.Item>
-                    <Menu.Item name='Add Concept' active={activeItem === 'Add Concept'}
-                      onClick={this.handleItemClick}>
-                        <Icon name='plus' color='teal'/>
-                        {AdminMenu.AdminMenu.Topic8}
+                    <Menu.Item >
+                      <Accordion>
+                    <Accordion.Title id="accordian">
+                      {AdminMenu.AdminMenu.Topic8}
+                      <Icon name='dropdown' color='teal' />
+                    </Accordion.Title>
+                    <Accordion.Content >
+                      <Menu.Item name='Add Concept' active={activeItem === 'Add Concept'}
+                          onClick={this.handleItemClick}>
+                          {AdminMenu.AdminMenu.Topic8a}
+                      </Menu.Item>
+                      <Menu.Item name='Rename Concept' active={activeItem === 'Rename Concept'}
+                          onClick={this.handleItemClick}>
+                          {AdminMenu.AdminMenu.Topic8b}
+                    </Menu.Item>
+                    </Accordion.Content>
+                </Accordion>
                     </Menu.Item>
                     <Menu.Item name='View Graph' active={activeItem === 'View Graph'}
                       onClick={this.handleItemClick}>
@@ -73,10 +87,6 @@ export default class SidebarBot extends Component {
                     <Menu.Item name='Test Graph' active={activeItem === 'Test Graph'}
                       onClick={this.handleItemClick}>
                         <Icon name='find' color='teal'/>{AdminMenu.AdminMenu.Topic10}
-                    </Menu.Item>
-                    <Menu.Item name='LogOut'>
-                        <Icon name='sign out' color='teal'/>
-                        <a href='#/log'>{AdminMenu.AdminMenu.Topic7}</a>
                     </Menu.Item>
                 </Sidebar>
                 <Sidebar.Pusher className='container' style={{

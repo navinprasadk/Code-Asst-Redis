@@ -6,6 +6,7 @@ export default class AssistantView extends React.Component {
     constructor(props) {
         super(props);
     }
+    /* @threkashri: edited code for displaying Text */
     render() {
       return (
           <Feed id='assistantView'>

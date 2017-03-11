@@ -151,11 +151,7 @@ export default class LeftMenu extends Component {
                         <Icon name='alarm' color='teal'/>
                         {LeftMenuPage.LeftMenu.Menu4}
                     </Menu.Item>
-                    <Menu.Item name='LogOut' active={activeItem === 'LogOut'}
-                      onClick={this.handleItemClick}>
-                        <Icon name='sign out' color='teal'/>
-                        <a href='#/logout'>{LeftMenuPage.LeftMenu.Menu5}</a>
-                    </Menu.Item>
+
                 </Sidebar>
                 <Sidebar.Pusher id="sidebarpusher">
                     <Segment id="segmentleftbar">
@@ -182,6 +178,11 @@ export default class LeftMenu extends Component {
                                             <Dropdown.Item text='Change Password' icon='lock'
                                               disabled={(!this.state.usertype)}
                                               onClick={this.onChangePassword}/>
+                                              <a href='#/logout'><Dropdown.Item text='Logout' icon='sign out'
+                                                active={activeItem === 'LogOut'}
+                                                disabled={(!this.state.usertype)}
+                                                onClick={this.handleItemClick}/>
+                                              </a>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Menu.Item>

@@ -30,19 +30,22 @@ export default class InputUserMesaage extends React.Component {
             username: this.props.username,
             question: message
         }).then((response) => {
+          //  @Mayanka: redirect to display warning message on abuse
           if(response.data.abuseCount > 0){
         console.log('abusinfcount and present '+response.data.abuseCount+response.data.abusePresent);
         ginniReply.push(<AssistantGinniMixedReply
           handleGinniReply={this.props.handleGinniReply} abuseCount={response.data.abuseCount} abusePresent={response.data.abusePresent} data={response.data}/>);
       }
+      //  @Mayanka: If no abuse found, further processing
       else  if (response.data) {
-              console.log(response.data+"...........response");
+              //  @Mayanka: answer not found Message
                 if(!response.data.isUnAnswered) {
                       ginniReply.push(<AssistantGinniMixedReply
                         handleGinniReply={this.props.handleGinniReply} question={message.value}
                         data={response.data.answerObj}/>);
                 }
-                else{
+                //  @Mayanka: display answer
+                  else{
                   response.data.answerObj.forEach((reply)=>{
                     ginniReply.push(<AssistantGinniPlainText value={reply.value}/>);
                     if(reply.keywordResponse) {

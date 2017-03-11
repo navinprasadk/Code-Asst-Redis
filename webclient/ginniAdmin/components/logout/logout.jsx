@@ -10,7 +10,7 @@ export default class LogoutAdmin extends React.Component
     state = {
         open: true
     }
-    close = () => hashHistory.push('/react');
+    close = () => hashHistory.push('/'+Cookie.load('domain').toLowerCase());
     // all the cookies stored while login will be cleared and user will be logged out
     handleLogout()
     {
@@ -23,6 +23,7 @@ export default class LogoutAdmin extends React.Component
             Cookie.remove('token');
             Cookie.remove('username');
             Cookie.remove('profilepicture');
+            Cookie.remove('domain');
             hashHistory.push('/logoutfile');
         }).catch(function(error) {});
         console.log(error);

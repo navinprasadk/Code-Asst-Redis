@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema({
         },
         domain: Array
     },
+    abusecount: {
+      type: Number,
+      default: 0
+    },
     facebook: {
         id: String,
         token: String,

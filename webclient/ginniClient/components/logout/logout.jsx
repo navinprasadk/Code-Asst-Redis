@@ -20,7 +20,10 @@ export default class Logout extends React.Component
           .then(function(response) {
             let socket = io();
             socket.emit('userLoginStatus', {value: -1}); // v1
-            socket.emit('updateUserList'); // v2
+
+            /* @ramvignesh: event to update the user list */
+            socket.emit('updateUserList');
+            
             Cookie.remove('authType');
             Cookie.remove('token');
             Cookie.remove('profilepicture');

@@ -8,6 +8,7 @@ export default class AssistantView extends React.Component {
         super(props);
     }
     render() {
+      /* @yuvashree: welcome message for user */
       if(this.props.userMessage === 'nil')
       {
         return (

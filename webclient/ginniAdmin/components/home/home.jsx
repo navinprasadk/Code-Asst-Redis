@@ -6,6 +6,11 @@ import Cookie from 'react-cookie';
 import './homestyle.css';
 import AdminHomePage from '../../../Multi_Lingual/Wordings.json';
 export default class FrontPage extends React.Component {
+
+  constructor() {
+      super();
+      this.onSubmitEmail = this.onSubmitEmail.bind(this);
+  }
     componentDidMount()
     {
         this.getUserProfile();
@@ -27,8 +32,48 @@ export default class FrontPage extends React.Component {
         });
     }
     // redirects to react home page
-    onSubmitEmail() {
-        hashHistory.push('/react');
+    //Set the loggedinDomainStatus to the Admin @ Deepika
+    onSubmitEmail(e) {
+      console.log(Cookie.load('email')+" in home.jsx onSubmitEmail");
+      let socket = io();
+      switch(e.target.alt) {
+        case 'react':
+        Axios({
+                method: 'PUT',
+                url: '/user/setlogindomain',
+                data: { email: Cookie.load('email'), domain: 'react'}
+              }).then(function (response) {
+                console.log(response+" :response");
+                console.log(`Admin current domain: ${e.target.alt}`);
+              })
+               .catch(function (error) {
+                   console.log(error);
+              });
+          Cookie.save('domain','REACT');
+          console.log(Cookie.load('domain'));
+          socket.emit('updateUserList');
+
+          hashHistory.push('/react');
+          break;
+        case 'design pattern':
+        Axios({
+                method: 'PUT',
+                url: '/user/setlogindomain',
+                data: { email: Cookie.load('email'), domain: 'design pattern'}
+              }).then(function (response) {
+                console.log(`Admin current domain: ${e.target.alt}`);
+              })
+               .catch(function (error) {
+                   console.log(error);
+              });
+              Cookie.save('domain','DESIGN PATTERN');
+              console.log(Cookie.load('domain'));
+              socket.emit('updateUserList');
+              hashHistory.push('/design pattern');
+          break;
+        default:
+          break;
+      }
     }
     render() {
         return (
@@ -57,12 +102,12 @@ export default class FrontPage extends React.Component {
                             <Grid.Row>
                                 <center>
                                     <Image className="imagepointer" src='../../images/react.jpg'
-                                    size='small' avatar onClick={this.onSubmitEmail.bind(this)}/>
+                                    size='small' alt='react' avatar onClick={this.onSubmitEmail}/>
                                 </center>
                             </Grid.Row>
                             <Grid.Row>
                                 <center>
-                                  <h2 className="heading1" onClick={this.onSubmitEmail.bind(this)}>
+                                  <h2 className="heading1" onClick={this.onSubmitEmail}>
                                       {AdminHomePage.AdminHome.Topic1}</h2>
                                 </center>
                             </Grid.Row>
@@ -70,7 +115,7 @@ export default class FrontPage extends React.Component {
                         <Grid.Column width={4}>
                             <Grid.Row>
                                 <center>
-                                    <Image src='../../images/designlogo.png' size='small' avatar onClick={this.onSubmitEmail.bind(this)}/>
+                                    <Image src='../../images/designlogo.png' size='small' alt='design pattern' avatar onClick={this.onSubmitEmail.bind(this)}/>
                                 </center>
                             </Grid.Row>
                             <Grid.Row>

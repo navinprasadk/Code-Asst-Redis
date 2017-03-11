@@ -1,5 +1,6 @@
 import React from 'react';
 import {Feed, Label} from 'semantic-ui-react';
+import {hashHistory} from 'react-router';
 import AssistantGinniUrlDisplay from './assistantGinniUrlDisplay';
 import AssistantGinniVideoDisplay from './assistantGinniVideoDisplay';
 import AssistantGinniMoreTextDisplay from './assistantGinniMoreTextDisplay';
@@ -8,11 +9,8 @@ import AssistantGinniOptions from './assistantGinniOptions';
 import AssistantGinniKeywordResponse from './assistantGinniKeywordResponse';
 import VideoPlayer from './videoPlayer';
 import UnfurlLink from './unfurlLink';
-//import CodeAssistantConfig from '../../../config/codeAssistant.json'
-
 import './chatcontainerstyle.css';
 import CodeAssistant from '../../../Multi_Lingual/Wordings.json';
-
 export default class AssistantGinniMixedReply extends React.Component {
     // props validation
     static propTypes = {
@@ -51,26 +49,25 @@ export default class AssistantGinniMixedReply extends React.Component {
         this.props.handleGinniReply(ginniReply);
     }
     logoutAfterWarning(){
-     window.location.href = 'http://localhost:8080/#';
+     hashHistory.push('/');
   }
+  /* @yuvashree: added function to play video on clicking the button */
     playVideo() {
         let videoUrl = this.props.data.video[0].value;
-        this.props.handleGinniReply([< VideoPlayer url = {
-                videoUrl
-            } />]);
+        this.props.handleGinniReply([< VideoPlayer url = {videoUrl} />]);
     }
     render() {
           let text = '';
-           /* Initialize swear word count */
+           //  : Initialize swear word count */
           let abuseCount = this.props.abuseCount;
-           /* check if swear is present in the current query */
+           //  @Mayanka: check if swear is present in the current query
           let abusePresent = this.props.abusePresent;
           if (abuseCount > 3){
-          /* redirect to logout function */
+          //  @Mayanka: redirect to logout function
             this.logoutAfterWarning();
                   }
-          else if(abuseCount == 3 ) {
-            /* Final warnining to the abuser */
+          else if(abuseCount == 10 ) {
+            //  @Mayanka: Final warnining to the abuser
             return (
                 <Feed id="ginniview">
                     <Feed.Event>
@@ -85,9 +82,9 @@ export default class AssistantGinniMixedReply extends React.Component {
                   </Feed>
             );
           }
-           /* check if swear is present in the current query and issue warning */
+           // @Mayanka: check if swear is present in the current query and issue warning
           else if(abusePresent == true) {
-            /* only 3 chances given the abuser  */
+            //  @Mayanka only 3 chances given the abuser
             let warningCount = abuseCount ;
             return (
                 <Feed id="ginniview">
@@ -106,15 +103,22 @@ export default class AssistantGinniMixedReply extends React.Component {
             );
             warningCount = warningCount - 1;
           }
-           /* proper reply if no swear word */
+           // @Mayanka: proper reply if no swear word
   else {
         let text = '';
+        /* @yuvashree: edited code for text view */
         if(this.props.data.text) {
           text = this.props.data.text[0].value;
           return (
                 <Feed id="ginniview">
-                <Feed.Event>
+                    <Feed.Event>
                     <Feed.Content id = 'ginniviewKeyword'>
+                      <Feed.Extra extras>
+                        <p>
+                           {this.props.data.extras}
+                       </p>
+                       <br/>
+                       </Feed.Extra>
                         <Feed.Summary> {text} </Feed.Summary>
                         <Feed.Extra>
                           <hr/>
@@ -142,7 +146,7 @@ export default class AssistantGinniMixedReply extends React.Component {
               </Feed>
           );
         }
-
+        /* @threkashri: edited code for displaying image */
       else if (this.props.data.image) {
         // text = this.props.data.image[0].value;
         let imageURL = this.props.data.image[0].value;
@@ -152,11 +156,15 @@ export default class AssistantGinniMixedReply extends React.Component {
           <Feed id="ginniview">
           <Feed.Event>
               <Feed.Content id = 'ginniviewKeyword'>
-                  <Feed.Summary> {text} </Feed.Summary>
-                  <AssistantGinniOptions question={this.props.question}
-                    type='text' value={text}/>
+                <Feed.Extra extras>
+                           {this.props.data.extras}
+                 </Feed.Extra>
+                  <Feed.Summary> <a title='click to open the image in new tab'
+                    href={imageURL} target='_blank'>{text}</a>
+                 </Feed.Summary>
                     <Feed.Extra id='assistantViewUserDate'>
-                        {this.props.data.time}
+                      <AssistantGinniOptions question={this.props.question}
+                        type='text' value={text}/>  {this.props.data.time}
                     </Feed.Extra>
               </Feed.Content>
           </Feed.Event>
@@ -164,6 +172,7 @@ export default class AssistantGinniMixedReply extends React.Component {
         );
       }
         let blog = '';
+        /* @yuvashree: edited code for displaying blogs */
         if(this.props.data.blog) {
           blog = this.props.data.blog[0].value;
           console.log(blog);
@@ -171,6 +180,9 @@ export default class AssistantGinniMixedReply extends React.Component {
               <Feed id="ginniview">
               <Feed.Event>
                   <Feed.Content id = 'ginniviewKeyword'>
+                    <Feed.Extra extras>
+                           {this.props.data.extras}
+                         </Feed.Extra>
                     <Feed.Extra>
                       <UnfurlLink url ={blog}/>
                   </Feed.Extra>
@@ -193,6 +205,7 @@ export default class AssistantGinniMixedReply extends React.Component {
         );
       }
       let video = '';
+      /* @yuvashree: edited code for displaying videos */
       if(this.props.data.video) {
         video = this.props.data.video[0].value;
         console.log(video);
@@ -200,6 +213,9 @@ export default class AssistantGinniMixedReply extends React.Component {
             <Feed id="ginniview">
             <Feed.Event>
                 <Feed.Content id = 'ginniviewKeyword'>
+                  <Feed.Extra extras>
+                           {this.props.data.extras}
+                         </Feed.Extra>
                   <Feed.Extra>
                     <UnfurlLink url ={video}/>
                 </Feed.Extra>
@@ -209,7 +225,8 @@ export default class AssistantGinniMixedReply extends React.Component {
                             ? <Label onClick={this.displayVideos}
                               basic color='orange' id='cursor'>Videos</Label>
                             : ''}
-                              <Label onClick={this.playVideo} basic color='orange' id='cursor'>Play video</Label>
+                            {/* @yuvashree: added button to play video */}
+                            <Label onClick={this.playVideo} basic color='orange' id='cursor'>Play video</Label>
                               <AssistantGinniOptions question={this.props.question}
                                 type='text' value={text}/>
                     </Label.Group>

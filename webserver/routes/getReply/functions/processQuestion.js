@@ -39,6 +39,7 @@ module.exports = function(sentence,intentLexicon,keywordLexicon,typeLexicon) {
     let keywords = [];
     // intent array will contain intents extracted from question
     let intents = [];
+    /* @yuvashree: type array will contain types extracted from question */
     let types = [];
     /* iterate over the tokens and search for keywords and intents (if a given token
     is keyword or intent then check the next words for kwyword or intent)*/
@@ -88,6 +89,7 @@ module.exports = function(sentence,intentLexicon,keywordLexicon,typeLexicon) {
             i = i + keyword.length - 1;
             keywords.push(keyword.join(' '));
         }
+        /* @yuvashree: iterate over the tokens and find the types that user requests */
         for (let y = 0; y < typeLexicon.length; y = y + 1) {
             let splittype = typeLexicon[y].split(' ');
             if (splittype[0] === tokens[i]) {

@@ -8,6 +8,7 @@ export default class AssistantView extends React.Component {
     constructor(props) {
         super(props);
     }
+    /* @threkashri: edited code for displaying Video Link */
     render() {
       return (
           <Feed id='assistantView'>

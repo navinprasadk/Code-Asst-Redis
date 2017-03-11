@@ -10,11 +10,10 @@ let server = app.listen(8080, '0.0.0.0', function(err, result) {
     }
     console.log("server started at 8080");
 });
+let io = require('socket.io')(server);
 
 // socket.io demo
-let io = require('socket.io')(server);
 io.on('connection', function(socket) {
-
     socket.emit('server event', {
         foo: 'bar'
     });
@@ -24,7 +23,19 @@ io.on('connection', function(socket) {
     socket.on('userLoginStatus', function(data) {
       socket.broadcast.emit('userLoggedIncount', data);
     });
+
     socket.on('client event', function(data) {
         socket.broadcast.emit('update label', data);
     });
+
+    // v2
+    socket.on('updateUserList', function() {
+      socket.broadcast.emit('update userlist');
+    });
+
+    // @keerthana:Listening sentiment socket
+    socket.on('sentiment', function(data) {
+        socket.broadcast.emit('sentiment score', data);
+    });
+
 });

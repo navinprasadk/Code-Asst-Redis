@@ -73,6 +73,10 @@ export default class TopMenuBot extends React.Component {
                               <Dropdown.Item text='Edit Profile'
                                 disabled={(!this.state.usertype)} icon='user'
                                  onClick={this.onSubmitEmail}/></a>
+                                 <a href='#/log'>
+                                   <Dropdown.Item text='Logout'
+                                     disabled={!this.state.usertype} icon='sign out'/>
+                                 </a>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Item>

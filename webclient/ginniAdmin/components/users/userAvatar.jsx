@@ -6,7 +6,7 @@ export default class UserAvatar extends React.Component
     constructor() {
         super();
     }
-
+// To find the online user @ Deepika
     render() {
         let color = this.props.loginStatus
             ? 'lime'

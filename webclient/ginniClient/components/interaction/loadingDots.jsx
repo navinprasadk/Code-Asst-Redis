@@ -8,6 +8,7 @@ export default class LoadingDots extends React.Component {
     constructor(props) {
         super(props);
     }
+    /* @threkashri: edited code for loadingDots */
     render() {
       return (
           <Feed id='assistantView'>

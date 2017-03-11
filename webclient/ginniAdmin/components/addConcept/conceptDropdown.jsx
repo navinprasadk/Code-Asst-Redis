@@ -32,9 +32,7 @@ export default class IntentDropDown extends React.Component {
                         <Dropdown fluid options={this.props.concepts} placeholder='Concept'
                           search selection onChange={this.handleConcept} value={this.props.value2}/>
                     </Input>
-
                 </Form.Field>
-
             </Form>
         );
     }

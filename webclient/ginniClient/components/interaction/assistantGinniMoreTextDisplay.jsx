@@ -8,6 +8,7 @@ export default class AssistantGinniMoreTextView extends React.Component {
     constructor(props) {
         super(props);
     }
+    /* @threkashri: edited code for displaying more text */
     render() {
       return (
         <Feed id="ginniview">

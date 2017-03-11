@@ -1,8 +1,7 @@
 import React from 'react';
-
 import {Sigma, NeoCypher, EdgeShapes} from 'react-sigma';
 
-class IndexComponent extends React.Component {
+class ViewGraph extends React.Component {
     constructor() {
         super();
     }
@@ -26,4 +25,4 @@ class IndexComponent extends React.Component {
     }
 }
 
-export default IndexComponent;
+export default ViewGraph;

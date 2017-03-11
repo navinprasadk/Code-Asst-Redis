@@ -203,7 +203,11 @@ export default class Signup extends React.Component {
 render() {
     const {open, dimmer, active} = this.state;
     return (
-        <div>
+      <div style={{
+       backgroundImage: "url('../../images/intro-bg.gif')",
+       width: '100%',
+       height: '100%'
+     }}>
         <Modal dimmer={dimmer} open={open} onClose={this.close}
           size="small" closeIcon="close" id='modalsignupcss'>
         <Modal.Header id="signup"><Image src="../../images/ginianim.gif" avatar/>

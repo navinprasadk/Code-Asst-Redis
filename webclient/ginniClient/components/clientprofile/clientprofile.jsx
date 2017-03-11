@@ -26,13 +26,15 @@ export default class ClientProfile extends React.Component
             firstname: '',
             lastname: '',
             photo: '',
-            changeImage: true
+            changeImage: true,
+            domainName: ''
         };
         this.OnSubmitData = this.OnSubmitData.bind(this);
         this.show = this.show.bind(this);
         this.onDrop = this.onDrop.bind(this);
         this.saveImage = this.saveImage.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
+        this.profile = this.profile.bind(this);
     }
     // to set the image for preview
     onDrop(files)
@@ -76,14 +78,15 @@ export default class ClientProfile extends React.Component
       // if user profile updated successfully it redirects to react page
     profile()
     {
-        hashHistory.push('/chat');
+      console.log(this.state.domainName);
+        hashHistory.push('/chat/'+this.state.domainName);
     }
       // get the information about the user like fetches emailid
     componentDidMount() {
         let self = this;
         Axios({url: '/clientinformation',
         method: 'get'}).then(function(response) {
-            self.setState({email: response.data[0].local.email});
+            self.setState({email: response.data[0].local.email, domainName: response.data[0].local.loggedinDomain});
         }).catch(function(err) {
             console.log(err);
         });
@@ -115,7 +118,7 @@ export default class ClientProfile extends React.Component
         photo.append('IMG', file[0]);
         this.setState({file: file});
     }
-    close = () => hashHistory.push('/chat');
+    close = () => hashHistory.push('/chat/'+this.state.domainName);
     // validation for firstname
     ChangeFirst = (event) => {
         this.setState({firstname: event.target.value});

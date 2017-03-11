@@ -50,8 +50,10 @@ export default class LoginPage extends React.Component
                   else{
                     hashHistory.push('/clienthome');
                     let socket = io();
-                    socket.emit('userLoginStatus', {value: 1}); // v1
-                    socket.emit('updateUserList'); // v2
+                    socket.emit('userLoginStatus', {value: 1});
+
+                    /* @ramvignesh: event to update the user list */
+                    socket.emit('updateUserList');
                   }
                 },
                 /* It throws a error message in case of any error like password
@@ -85,7 +87,11 @@ export default class LoginPage extends React.Component
     render() {
         const {open, dimmer} = this.state;
         return (
-            <div>
+            <div style={{
+             backgroundImage: "url('../../images/intro-bg.gif')",
+             width: '100%',
+             height: '100%'
+           }}>
             <Modal dimmer={dimmer} open={open} onClose={this.close}
               closeOnRootNodeClick={false} size="small" closeIcon='close' id='modallogincss'>
             <Modal.Header id="headerstyle">

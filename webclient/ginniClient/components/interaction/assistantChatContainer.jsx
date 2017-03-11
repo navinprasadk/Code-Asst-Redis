@@ -5,10 +5,12 @@ import InputUserMessage from './inputUserMessage';
 import {Menu, Icon, Input, Dimmer, Loader} from 'semantic-ui-react';
 import Cookie from 'react-cookie';
 import Axios from 'axios';
+import sentiment from 'sentiment';
 import AssistantGinniMixedReply from './assistantGinniMixedReply';
 import AssistantGinniPlainText from './assistantGinniPlainText';
 import AssistantGinniKeywordResponse from './assistantGinniKeywordResponse';
 import AssistantUserView from './assistantUserView';
+import SearchUserChat from './searchUserChat';
 import './chatcontainerstyle.css';
 export default class AssistantChatContainer extends React.Component {
 
@@ -19,9 +21,10 @@ export default class AssistantChatContainer extends React.Component {
             username: 'User',
             loaderActive: true,
             profilePicture: '',
-            searchContent: false,
             searchValue: '',
-            SearchResult: ''
+            SearchResult: '',
+            email: '',
+            messageHistort:[]
         };
         this.retriveChat = this.retriveChat.bind(this);
         this.updateSearchValue = this.updateSearchValue.bind(this);
@@ -29,37 +32,35 @@ export default class AssistantChatContainer extends React.Component {
         this.pushGinniMessages = this.pushGinniMessages.bind(this);
         // to display user messages
         this.pushUserMessages = this.pushUserMessages.bind(this);
-        this.onClickSearch = this.onClickSearch.bind(this);
+
     }
     updateSearchValue(e) {
-      e.preventDefault();
-      this.setState({
-        searchValue: e.target.value,
-        searchContent: true
-      });
-    }
-    onClickSearch(e) {
         e.preventDefault();
-        
-        this.retriveChat();
+        this.setState({searchValue: e.target.value});
     }
     componentDidMount() {
         // Scroll to the bottom on initialization
         let username = Cookie.load('username');
+        let email = Cookie.load('email');
         let authType = Cookie.load('authType');
         if (authType === 'local') {
             if (username) {
                 this.state.username = username;
             }
+            if (email) {
+                this.state.email = email;
+            }
             let profilePicture = Cookie.load('profilepicture');
             if (profilePicture) {
-                this.state.profilePicture =
-                require('../../../../webserver/images/' + profilePicture);
+                this.state.profilePicture = require('../../../../webserver/images/' + profilePicture);
             }
             //    this.retriveChat();
         } else if (authType === 'facebook') {
             if (username) {
                 this.state.username = username;
+            }
+            if (email) {
+                this.state.email = email;
             }
             let profilePicture = Cookie.load('profilepicture');
             if (profilePicture) {
@@ -68,6 +69,9 @@ export default class AssistantChatContainer extends React.Component {
         } else if (authType === 'google') {
             if (username) {
                 this.state.username = username;
+            }
+            if (email) {
+                this.state.email = email;
             }
             let profilePicture = Cookie.load('profilepicture');
             this.state.profilePicture = profilePicture;
@@ -83,125 +87,64 @@ export default class AssistantChatContainer extends React.Component {
         }
     }
     retriveChat(e) {
-      console.log('Inside retrieve chat');
-      // e.preventDefault();
-      if(this.state.searchContent === false) {
-        this.setState({
-          messages: [],
-          SearchResult: ''
-        });
-        Axios.get('/retriveChat').then((response) => {
-            if (response.data) {
-                response.data.chats.forEach((chat) => {
-                    let length = this.state.messages.length;
+        console.log('Inside retrieve chat');
+            Axios.get('/retriveChat').then((response) => {
+                if (response.data) {
+                  /* @yuvashree: welcome message if user is new to specific domain */
+                  if(response.data.chats.length === 0) {
                     this.state.messages.push(
                         <div ref={(ref) => this['_div' + length] = ref}>
-                            <AssistantUserView msgDate={chat.question.time}
-                              userName={this.state.username} userMessage={chat.question.value}
-                              profilePicture={this.state.profilePicture}/>
+                            <AssistantUserView userMessage='nil'/>
                         </div>
                     );
-                    if (chat.isUnAnswered) {
-                        chat.answerObj.forEach((answer, index) => {
-                            let length = this.state.messages.length;
-                            this.state.messages.push(
-                                <div ref={(ref) => this['_div' + length] = ref}>
-                                    <AssistantGinniPlainText value={answer.value}/>
-                                </div>
-                            );
-                            if (answer.keywordResponse) {
-                                let length = this.state.messages.length;
-                                this.state.messages.push(
-                                    <div ref={(ref) => this['_div' + length] = ref}>
-                                        <AssistantGinniKeywordResponse
-                                          handleGinniReply ={this.pushGinniMessages}
-                                           question={chat.question.value} data={answer}/>
-                                    </div>
-                                );
-                            }
-                        });
-                    } else {
-                        let length = this.state.messages.length;
-                        console.log('length: ', length);
-                        this.state.messages.push(
-                            <div ref={(ref) => this['_div' + length] = ref}>
-                                <AssistantGinniMixedReply question={chat.question.value}
-                                   data={chat.answerObj} handleGinniReply={this.pushGinniMessages}/>
-                            </div>
-                        );
-                    }
-                });
-            }
-            this.setState({messages: this.state.messages, loaderActive: false});
-        }).catch((err) => {
-            this.setState({messages: this.state.messages, loaderActive: false});
-        });
-      }
-      else {
-        console.log('inside search in else');
-        this.setState({
-          messages: [],
-          SearchResult:`Search result for \"${this.state.searchValue}\"`
-        });
-
-        // for search content inside history
-        Axios.get('/retriveChat').then((response) => {
-          console.log('inside before response data');
-          console.log('response'+response);
-            if (response.data) {
-              console.log('inside before forEach');
-                response.data.chats.forEach((chat) => {
-                  console.log('Question: '+chat.question.value);
-                  console.log('search value: '+this.state.searchValue);
-                  if((chat.question.value).includes(this.state.searchValue)) {
-                    console.log('after checking content');
-                    let length = this.state.messages.length;
-                    this.state.messages.push(
-                        <div ref={(ref) => this['_div' + length] = ref}>
-                            <AssistantUserView msgDate={chat.question.time}
-                              userName={this.state.username} userMessage={chat.question.value}
-                              profilePicture={this.state.profilePicture}/>
-                        </div>
-                    );
-                    if (chat.isUnAnswered) {
-                        chat.answerObj.forEach((answer, index) => {
-                            let length = this.state.messages.length;
-                            this.state.messages.push(
-                                <div ref={(ref) => this['_div' + length] = ref}>
-                                    <AssistantGinniPlainText value={answer.value}/>
-                                </div>
-                            );
-                            if (answer.keywordResponse) {
-                                let length = this.state.messages.length;
-                                this.state.messages.push(
-                                    <div ref={(ref) => this['_div' + length] = ref}>
-                                        <AssistantGinniKeywordResponse
-                                          handleGinniReply ={this.pushGinniMessages}
-                                           question={chat.question.value} data={answer}/>
-                                    </div>
-                                );
-                            }
-                        });
-                    } else {
-                        let length = this.state.messages.length;
-                        console.log('length: ', length);
-                        this.state.messages.push(
-                            <div ref={(ref) => this['_div' + length] = ref}>
-                                <AssistantGinniMixedReply question={chat.question.value}
-                                   data={chat.answerObj} handleGinniReply={this.pushGinniMessages}/>
-                            </div>
-                        );
-                    }
                   }
-
-                });
-            }
-            this.setState({messages: this.state.messages, loaderActive: false});
-        }).catch((err) => {
-            this.setState({messages: this.state.messages, loaderActive: false});
-        });
-      }
-
+                    response.data.chats.forEach((chat) => {
+                        let length = this.state.messages.length;
+                        this.state.messages.push(
+                            <div ref={(ref) => this['_div' + length] = ref}>
+                                <AssistantUserView msgDate={chat.question.time} userName={this.state.username} userMessage={chat.question.value} profilePicture={this.state.profilePicture}/>
+                            </div>
+                        );
+                        if (chat.isUnAnswered) {
+                            chat.answerObj.forEach((answer, index) => {
+                                let length = this.state.messages.length;
+                                this.state.messages.push(
+                                    <div ref={(ref) => this['_div' + length] = ref}>
+                                        <AssistantGinniPlainText value={answer.value}/>
+                                    </div>
+                                );
+                                if (answer.keywordResponse) {
+                                    let length = this.state.messages.length;
+                                    this.state.messages.push(
+                                        <div ref={(ref) => this['_div' + length] = ref}>
+                                            <AssistantGinniKeywordResponse handleGinniReply ={this.pushGinniMessages} question={chat.question.value} data={answer}/>
+                                        </div>
+                                    );
+                                }
+                            });
+                        } else {
+                            let length = this.state.messages.length;
+                            console.log('length: ', length);
+                            this.state.messages.push(
+                                <div ref={(ref) => this['_div' + length] = ref}>
+                                    <AssistantGinniMixedReply question={chat.question.value} data={chat.answerObj} handleGinniReply={this.pushGinniMessages}/>
+                                </div>
+                            );
+                        }
+                    });
+                }
+                /* @yuvashree: welcome message for new user */
+                  else {
+                    this.state.messages.push(
+                        <div ref={(ref) => this['_div' + length] = ref}>
+                            <AssistantUserView userMessage='nil'/>
+                        </div>
+                    );
+                  }
+                this.setState({messages: this.state.messages, loaderActive: false, messageHistort:response});
+            }).catch((err) => {
+                this.setState({messages: this.state.messages, loaderActive: false});
+            });
     }
     pushGinniMessages(ginniReply, loadingDots) {
         if (loadingDots) {
@@ -220,22 +163,17 @@ export default class AssistantChatContainer extends React.Component {
     }
     pushUserMessages(message) {
         let length = this.state.messages.length;
-        if(this.state.searchContent) {
-          this.setState({
-            searchContent:false,
-            messages: [],
-            SearchResult: ''
-          });
-          this.retriveChat();
-        }
-        // this.setState({
-        //   searchContent:false
-        // });
-        // this.retriveChat();
+        /* @keerthana:sentiment analysis */
+        let score = sentiment(message.value).score;
+        var socket = io();
+        socket.emit('sentiment', {
+            email: this.state.email,
+            score: score
+        });
+
         let userMessageDisplay = (
             <div ref={(ref) => this['_div' + length] = ref} key={length}>
-                <AssistantUserView msgDate={message.time} userName={this.state.username}
-                   userMessage={message.value} profilePicture={this.state.profilePicture}/>
+                <AssistantUserView msgDate={message.time} userName={this.state.username} userMessage={message.value} profilePicture={this.state.profilePicture}/>
             </div>
         );
         this.state.messages.push(userMessageDisplay);
@@ -255,24 +193,25 @@ export default class AssistantChatContainer extends React.Component {
                     <Menu.Item position='left'>
                         <Input className='icon' style={{
                             width: 400
-                        }} onChange={this.updateSearchValue} icon={< Icon name = 'search' color = 'red' circular link onClick={this.onClickSearch} />}
-                        placeholder='Search your content' focus/>
+                        }} onChange={this.updateSearchValue} placeholder='Search your content' focus/>
+                      
+                        &nbsp; <SearchUserChat searchValue={this.state.searchValue} messageHistort={this.state.messageHistort}/>
                     </Menu.Item>
                 </Menu>
-                <Scrollbars id='ginni' renderTrackHorizontal={props => <div {...props}
-                  className="track-horizontal" style={{
+                <Scrollbars id='ginni' renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
                     display: 'none',
                     position: 'right',
                     minHeight: '516px'
                 }}/>} autoHeight autoHeightMin={506}>
                     <div id='messagechat'>
-                        <div id="searchQuestion"><b>{this.state.SearchResult}</b></div><br></br>
+                        <div id="searchQuestion">
+                            <b>{this.state.SearchResult}</b>
+                        </div>
+                        <br></br>
                         {this.state.messages}
                     </div>
                 </Scrollbars>
-                <InputUserMessage username={this.state.username}
-                  handlerUserReply={this.pushUserMessages}
-                  handleGinniReply={this.pushGinniMessages}/>
+                <InputUserMessage username={this.state.username} handlerUserReply={this.pushUserMessages} handleGinniReply={this.pushGinniMessages}/>
             </div>
         );
     }

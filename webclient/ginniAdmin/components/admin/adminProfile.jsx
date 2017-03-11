@@ -67,7 +67,7 @@ export default class ClientProfile extends React.Component
                 data: image
             }
         }).then(function(response) {
-            hashHistory.push('/react');
+            hashHistory.push('/chat/'+Cookie.load('domain').lowerCase());
         }).catch(function(err) {
             console.log(err);
         });
@@ -75,7 +75,11 @@ export default class ClientProfile extends React.Component
     // if user profile updated successfully it redirects to react page
     profile()
     {
-        hashHistory.push('/react');
+      console.log(Cookie.load('domain').toLowerCase());
+
+
+          hashHistory.push('/'+Cookie.load('domain').toLowerCase());
+        
     }
     // get the information about the user like fetches emailid
     componentDidMount() {

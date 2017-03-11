@@ -3,10 +3,9 @@ let getNeo4jDriver = require('../../../neo4j/connection');
 let getLexicon = require('../../../lexicon/getLexicons');
 
 module.exports = function(newConcept, relationship, oldConcept, resultCallback) {
-    let NewConcept = nlp.text(newConcept).root();
-    let OldConcept = nlp.text(oldConcept).root();
-    let query = `MATCH (m:concept{name:${JSON.stringify(OldConcept)}})
-                MERGE (n:concept {name:${JSON.stringify(NewConcept)}})-[:${relationship}]->(m)`;
+    // @vibakar: cypher query for adding new concepts to existing concepts
+    let query = `MATCH (m:concept{name:${JSON.stringify(oldConcept)}})
+                MERGE (n:concept {name:${JSON.stringify(newConcept)}})-[:${relationship}]->(m)`;
     let session = getNeo4jDriver().session();
     session.run(query).then(() => {
         // Completed!

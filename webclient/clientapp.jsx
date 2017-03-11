@@ -4,6 +4,7 @@ import {Router, Route, hashHistory, IndexRoute} from 'react-router';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import react from './ginniAdmin/components/menu/menu';
+import designPattern from './ginniAdmin/components/menu/menu';
 import AdminHome from './ginniAdmin/components/home/home';
 import App1 from './ginniAdmin/components/app/app';
 import ApplicationHome from './applicationHome/applicationHome';
@@ -50,6 +51,7 @@ ReactDOM.render(
             <IndexRoute component={ClientHome} onEnter={requireAuth.bind(this)}/>
         </Route>
         <Route path='/react' component={react} onEnter={requireAuth.bind(this)}/>
+        <Route path='/design pattern' component={designPattern} onEnter={requireAuth.bind(this)}/>
         <Route path='/newpassword' component={NewPassword}/>
         <Route path='/login' component={LoginPage} />
         <Route path='/forgotpassword' component={ForgotPassword} />

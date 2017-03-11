@@ -1,5 +1,6 @@
 let getNeo4jDriver = require('../neo4j/connection');
 let fs = require('fs');
+/* redis client */
 let redis = require('redis');
 let client = redis.createClient(); // Creating redis client with default port name and host name as 127.0.0.1 and 6379 respectively
 
@@ -12,28 +13,36 @@ function createLexiconFiles(result) {
     // fs.writeFile(__dirname + '/intentLexicon.json', JSON.stringify(intentTerms), 'utf8');
     // fs.writeFile(__dirname + '/typeLexicon.json', JSON.stringify(typeTerms), 'utf8');
 
-    /* writing  in redis */
+    /* @navinprasad: add all the intents, keywords, types to redis */
     for (let i = 0; i < intentTerms.length; i = i + 1) {
-        /* inserting 'intent' in redis */
+        /* inserting 'intents' in redis */
         client.sadd(['intents', intentTerms[i]], function(err, reply) {
-            console.log('intents: ', reply);
+            if (err) {
+                throw(err);
+            }
+            // console.log('intents: ', reply);
         });
     }
 
     for (let i = 0; i < reactTerms.length; i = i + 1) {
-         /* inserting 'keyword' in redis */
-         client.sadd('keywords', reactTerms[i], function(err, reply) {
-            console.log('keywords: ', reply);
+        /* inserting 'keywords' in redis */
+        client.sadd(['keywords', reactTerms[i]], function(err, reply) {
+            if (err) {
+                throw(err);
+            }
+            // console.log('keywords: ', reply);
         });
     }
 
     for (let i = 0; i < typeTerms.length; i = i + 1) {
-         /* inserting 'types' in redis */
-         client.sadd('types', typeTerms[i], function(err, reply) {
-            console.log('types: ', reply);
+        /* inserting 'types' in redis */
+        client.sadd(['types', typeTerms[i]], function(err, reply) {
+            if (err) {
+                throw(err);
+            }
+            // console.log('types: ', reply);
         });
     }
-
 
 }
 module.exports = function() {
@@ -43,14 +52,11 @@ module.exports = function() {
                  MATCH (intent:intent) return COLLECT(intent.name),concepts,types`;
 
     let session = getNeo4jDriver().session();
-    session
-        .run(query)
-        .then(function(result) {
-            // Completed!
-            session.close();
-            createLexiconFiles(result);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    session.run(query).then(function(result) {
+        // Completed!
+        session.close();
+        createLexiconFiles(result);
+    }).catch(function(error) {
+        console.log(error);
+    });
 };

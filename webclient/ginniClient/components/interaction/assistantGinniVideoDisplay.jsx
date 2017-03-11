@@ -28,6 +28,7 @@ export default class AssistantGinniMixedReply extends React.Component {
         });
         this.props.handleGinniReply(ginniReply);
     }
+    /* @threkashri: edited code for displaying Video */
     render() {
         let videoUrl = this.props.videos[0].value;
         return (

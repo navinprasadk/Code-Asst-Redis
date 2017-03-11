@@ -17,6 +17,7 @@ export default class AssistantGinniMoreVideosView extends React.Component {
                 videoUrl
             } />]);
     }
+    /* @threkashri: edited code for displaying more Videos */
     render() {
       return (
         <Feed id="ginniview">

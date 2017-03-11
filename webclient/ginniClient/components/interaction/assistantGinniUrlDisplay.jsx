@@ -21,6 +21,7 @@ export default class AssistantGinniMixedReply extends React.Component {
     });
     this.props.handleGinniReply(ginniReply);
   }
+  /* @threkashri: edited code for displaying more Blogs */
     render() {
       let blogUrl = this.props.blogs[0].value;
       return (

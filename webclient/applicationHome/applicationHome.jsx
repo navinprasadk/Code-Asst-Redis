@@ -9,8 +9,9 @@ export default class AdminWelcomePage extends React.Component {
     render() {
         return (
             <div style={{
-                backgroundImage: "url('../../images/intro-bg.jpg')",
-                height: 'absolute'
+                backgroundImage: "url('../../images/intro-bg.gif')",
+                height: '100%',
+                width: '100%'
             }}>
                 <Grid container={true} centered={true}>
                     <Grid.Row/>
@@ -76,6 +77,16 @@ export default class AdminWelcomePage extends React.Component {
                     <Grid.Row/>
                     <br/><br/>
                 </Grid>
+                <div style={{
+                 position: 'absolute',
+                 top: '0px',
+                 left: '0px',
+                 backgroundRepeat: 'no-repeat',
+                 backgroundImage: "url('../../images/logo.gif')",
+                 width: '50%',
+                 height: '50%',
+                 zIndex: 2
+             }}></div>
             </div>
         );
     }

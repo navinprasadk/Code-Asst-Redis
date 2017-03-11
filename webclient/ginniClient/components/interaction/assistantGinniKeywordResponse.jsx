@@ -35,6 +35,7 @@ export default class AssistantGinniMixedReply extends React.Component {
           blogs={blogs}/>);
         this.props.handleGinniReply(ginniReply);
     }
+    /* @yuvashree: added function to play video on clicking the button */
     playVideo() {
         let videoUrl = this.props.data.video[0].value;
         this.props.handleGinniReply([< VideoPlayer url = {
@@ -42,6 +43,7 @@ export default class AssistantGinniMixedReply extends React.Component {
             } />]);
     }
     render() {
+      /* @yuvashree: edited code for displaying videos */
       if(this.props.data.blog === undefined)
       {
         let video = this.props.data.video[0];
@@ -73,6 +75,7 @@ export default class AssistantGinniMixedReply extends React.Component {
             </Feed>
             );
             }
+            /* @yuvashree: edited code for displaying blogs */
             else {
               let blog = this.props.data.blog[0];
               return (

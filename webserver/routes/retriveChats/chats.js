@@ -7,7 +7,7 @@ let User = require('./../../models/user');
 router.get('/', function(req, res) {
     let email = req.query.email || req.user.local.email ||
      req.user.facebook.email || req.user.google.email;
-
+     /* @yuvashree: to retrieve chat with domain */
      User.findOne({
        $or: [ { 'local.email': email }, { 'google.email': email }, { 'facebook.email': email } ]
      }, function(error,data) {
